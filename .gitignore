@@ -1,3 +1,5 @@
+# Front-end project folder
+/front
 
 # Created by https://www.gitignore.io/api/git,linux,macos,python,django,pycharm+all
 /.secrets
