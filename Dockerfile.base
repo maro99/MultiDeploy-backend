@@ -1,26 +1,24 @@
+
 # docker build -t multi-deploy:base -f Dockerfile.base .
 FROM        python:3.6.5-slim
 
-RUN         apt-get -y update --fix-missing
+RUN         apt-get -y update
 RUN         apt-get -y dist-upgrade
 
-# Node.js를 위한 패키지
-RUN         apt-get -y install curl
+# Node.js설치 위한 패키지
+RUN         apt-get -y install curl gnupg procps
 RUN         curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
-
-# Nginx, supervisor, node.js 설치
+# Nginx, supervisor, Node.js설치
 RUN         apt-get -y install nginx supervisor nodejs
 
 # Backend 및 Frontend의 패키지들을 미리 install
-COPY        ./requirements.txt           /srv/requirements.txt
-COPY        ./front/package.json         /srv/package.json
-#COPY        ./front/package-lock.json    /srv/package-lock.json
+COPY        ./requirements.txt              /srv/requirements.txt
+RUN         mkdir /srv/front
+COPY        ./front/package.json            /srv/front/package.json
+#COPY        ./front/package-lock.json       /srv/front/package-lock.json
 
-# pipenv lock --requirements > requirements.txt 으로 사전에 생성해놓
+# pipenv lock --requirements > requirements.txt 으로 생성
 RUN         pip install -r /srv/requirements.txt
-
-#Npm install 하기 전 이동부터
-WORKDIR     /srv/
+WORKDIR     /srv/front
 RUN         npm install
-
